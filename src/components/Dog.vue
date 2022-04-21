@@ -20,16 +20,16 @@
 
     methods:{
 
-      eat(){
-        this.value.energy += 2; //this.energy = this.energy + 2;
-      },
+      // eat(){
+      //   this.value.energy += 1; //this.energy = this.energy + 2;
+      // },
 
-      sleep(){
-        //this.energy++;
-        this.$super(Pet).sleep();
+      // sleep(){
+        
+      //   // this.$super(Pet).sleep();
       
-        this.value.appearance ++;
-      }
+      //   // this.value.appearance ++;
+      // }
 
 
     }

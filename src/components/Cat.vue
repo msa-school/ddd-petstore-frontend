@@ -14,7 +14,8 @@
 
 <script>
 
-  import Pet from './Pet'
+   const axios = require('axios').default;
+   import Pet from './Pet'
 
   export default {
     name: 'Cat',
@@ -28,9 +29,20 @@
     
     methods:{
 
-      groom(){
-        this.value.appearance ++;
+      async groom(){
+//        this.value.appearance ++;
+
+      
+        await axios.request({ 
+          method: 'PUT', 
+          url: new URL(this.value._links.groom.href).pathname, 
+          headers: {'Content-Type': 'application/json'}
+        });
+
+        this.refresh();
+
       }
+
 
 
     }

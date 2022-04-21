@@ -44,6 +44,7 @@
                   v-for="item in items"
                   :key="item"
                   link
+                  @click="addPet(item)"
                 >
                   <v-list-item-content>
                     <v-list-item-title>
@@ -73,10 +74,9 @@
               min-height="70vh"
               rounded="lg"
             >
-                          
-              <Cat v-model="cat"></Cat>
 
-              <Dog v-model="dog"></Dog>
+              <Pet @change="updatePet(pet)" :is="pets[index].type" v-model="pets[index]" v-for="(pet, index) in pets" :key="index"></Pet>
+                          
               
             </v-sheet>
           </v-col>
@@ -90,12 +90,15 @@
 
 import Cat from './components/Cat'  // import components.Cat;
 import Dog from './components/Dog'  // import components.Dog;
+import Pet from './components/Pet'  // import components.Dog;
+const axios = require('axios').default;
 
 export default {    // public class App{
   name: 'App',
 
   components: {
-    Cat, Dog
+    Cat, Dog,
+    Pet
   },
 
   data: () => ({
@@ -107,23 +110,96 @@ export default {    // public class App{
         '강아지',
         '고양이'
       ],
-      cat:{
-        type: 'CAT',
-        name: '양옹이',
-        energy: 10, appearance: 10
-
-      },
-
-      dog:{
-        type: 'DOG',
-        name: '멍멍이',
-        energy: 10, appearance: 5
-
-      }
-
+      pets: [
+        
+        
+      ]
   }),
 
+  created(){
+    this.init();
+  },
+
   methods:{
+
+    async init(){
+      const response = await axios.get("/cats");
+      
+      this.pets = response.data._embedded.cats;
+    },
+
+    addPet(item){
+
+      if(item == "강아지"){
+        this.pets.push({
+          type: 'Dog',
+          name: '멍멍이',
+          energy: 2, appearance: 5
+
+        });
+      }else
+
+      if(item == "고양이"){
+        this.pets.push({
+          type: 'Cat',
+          name: '양옹이',
+          energy: 2, appearance: 10
+
+        });
+      }
+
+
+       
+        axios.request({ 
+          method: 'POST', 
+          url: `/cats`, 
+          headers: {'Content-Type': 'application/json'}, 
+          data: this.pets[this.pets.length - 1]
+        });
+
+    },
+
+    updatePet(pet){
+
+        axios.request({ 
+          method: 'PATCH', 
+          url: new URL(pet._links.self.href).pathname, 
+          headers: {'Content-Type': 'application/json'}, 
+          data: pet
+        });
+    },
+
+    feedPet(pet){
+        axios.request({ 
+          method: 'PUT', 
+          url: new URL(pet._links.feed.href).pathname, 
+          headers: {'Content-Type': 'application/json'},         
+        });
+
+    },
+
+    sleepPet(pet){
+        axios.request({ 
+          method: 'PUT', 
+          url: new URL(pet._links.sleep.href).pathname, 
+          headers: {'Content-Type': 'application/json'},         
+        });
+
+    },
+
+    groomPet(pet){
+        axios.request({ 
+          method: 'PUT', 
+          url: new URL(pet._links.groom.href).pathname, 
+          headers: {'Content-Type': 'application/json'},         
+        });
+
+    },
+
+
+
+
+
 
 
   }
